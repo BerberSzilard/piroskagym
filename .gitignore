@@ -9,3 +9,7 @@ build/
 .next/
 
 *.log
+
+# backups
+*.bak
+*.bak.*
