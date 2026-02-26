@@ -1,0 +1,67 @@
+
+services:
+
+  db:
+
+    image: postgres:16-alpine
+
+    environment:
+
+      POSTGRES_DB: ${POSTGRES_DB}
+
+      POSTGRES_USER: ${POSTGRES_USER}
+
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+
+
+    volumes:
+
+      - pgdata:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+
+  api:
+
+    build: ./api
+
+    environment:
+
+      PORT: 4000
+
+      JWT_SECRET: ${JWT_SECRET}
+
+      DATABASE_URL: "postgres://piroska:Fp6vK06nPz1234@db:5432/piroskagym"
+
+    depends_on:
+
+      - db
+
+    ports:
+
+      - "127.0.0.1:4000:4000"
+
+    restart: unless-stopped
+
+
+  app:
+
+    build: ./app
+
+    depends_on:
+
+      - api
+
+    restart: unless-stopped
+
+    ports:
+
+      - "127.0.0.1:8080:3000"  # host nginx ide proxyzik
+
+
+
+volumes:
+
+  pgdata:
+
