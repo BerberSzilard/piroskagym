@@ -2,14 +2,14 @@ node_modules/
 
 .env
 
+# build artifacts
 dist/
-
 build/
-
 .next/
 
 *.log
 
 # backups
+.bak*
 *.bak
 *.bak.*
