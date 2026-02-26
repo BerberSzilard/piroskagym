@@ -8,6 +8,7 @@ import { apiFetch, logout } from "../../lib/auth";
 import { requireAdmin } from "../../lib/guards";
 
 import Link from "next/link";
+import StatusBadge from "../../components/StatusBadge";
 
 
 
@@ -199,6 +200,16 @@ async function loadUserPasses(userId) {
 async function cancelUserPass(passId) {
 
   return apiFetch(`/api/admin/user-passes/${passId}/cancel`, { method: "POST" });
+
+}
+
+function getPassCardBorder(status) {
+
+  if (status === "active") return "#d4ecd9";
+
+  if (status === "cancelled") return "#f4d2d2";
+
+  return "#e7e7e7";
 
 }
 
@@ -528,7 +539,11 @@ if (!users.length) {
 
          <div style={{ display: "grid", gap: 8 }}>
 
-           {passes.map((p) => (
+           {passes.map((p) => {
+
+            const passStatus = p.status === "canceled" ? "cancelled" : p.status;
+
+            return (
 
          <div
 
@@ -536,7 +551,7 @@ if (!users.length) {
 
             style={{
 
-              border: "1px solid #eee",
+              border: `1px solid ${getPassCardBorder(passStatus)}` ,
 
               padding: 12,
 
@@ -568,7 +583,7 @@ if (!users.length) {
 
                   <b>#{p.id}</b> – {p.pass_type?.name || "Bérlet"} –{" "}
 
-                  <b>{p.status}</b>
+                  <StatusBadge status={passStatus} />
 
                 </div>
 
@@ -580,7 +595,7 @@ if (!users.length) {
 
                 className="btn"
 
-                disabled={p.status === "cancelled"}
+                disabled={passStatus === "cancelled"}
 
                 onClick={async () => {
 
@@ -604,7 +619,9 @@ if (!users.length) {
 
           </div>
 
-        ))}
+        );
+
+          })}
 
       </div>
 
