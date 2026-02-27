@@ -1,0 +1,27 @@
+name: Smoke
+
+
+
+on:
+
+  pull_request:
+
+  push:
+
+    branches: ["main"]
+
+
+
+jobs:
+
+  smoke:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Smoke (compose + health + login)
+
+        run: ./scripts/smoke.sh
