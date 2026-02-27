@@ -1,4 +1,4 @@
--- CI schema bootstrap (minimal for auth smoke)
+-- CI schema bootstrap (minimal for auth + admin smoke)
 
 
 
@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
 
   role TEXT NOT NULL DEFAULT 'user',
+
+  disabled BOOLEAN NOT NULL DEFAULT false,
 
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 
