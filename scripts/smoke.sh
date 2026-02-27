@@ -6,7 +6,7 @@ set -euo pipefail
 
 COMPOSE="docker compose -f docker-compose.ci.yml"
 
-BASE_URL="http://127.0.0.1:14000"
+BASE_URL="${BASE_URL:-http://127.0.0.1:14000}"
 
 
 
@@ -36,7 +36,9 @@ echo "==> Waiting for API /api/health"
 
 for i in {1..60}; do
 
-  if curl -fsS "${BASE_URL}/api/health" >/dev/null; then
+  # Ha még indul a szerver, curl néha reset-et dob — ezt elnyeljük a wait loopban.
+
+  if curl -fsS "${BASE_URL}/api/health" >/dev/null 2>&1; then
 
     break
 
@@ -58,33 +60,39 @@ grep -q '"status":"ok"' /tmp/health.json
 
 echo "==> Auth smoke (login)"
 
+# GH Actions ubuntu-latest-en általában van jq, de ha még sincs, install.
+
 if ! command -v jq >/dev/null 2>&1; then
 
-  sudo apt-get update -y
+  apt-get update -y
 
-  sudo apt-get install -y jq
+  apt-get install -y jq
 
 fi
 
 
 
-TOKEN=$(
+LOGIN_RESP=$(
 
   curl -fsS -X POST "${BASE_URL}/api/auth/login" \
 
     -H "Content-Type: application/json" \
 
-    -d '{"email":"ci_admin@piroska.test","password":"ci_password"}' \
-
-  | jq -r '.token // empty'
+    -d '{"email":"ci_admin@piroska.test","password":"ci_password"}'
 
 )
 
 
 
+TOKEN=$(echo "$LOGIN_RESP" | jq -r '.token // empty')
+
+
+
 if [[ -z "${TOKEN}" ]]; then
 
-  echo "ERROR: login did not return token"
+  echo "ERROR: login did not return token. Response was:"
+
+  echo "$LOGIN_RESP"
 
   exit 1
 
