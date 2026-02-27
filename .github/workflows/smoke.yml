@@ -16,11 +16,15 @@ jobs:
 
   smoke:
 
+    name: Smoke CI
+
     runs-on: ubuntu-latest
 
     steps:
 
       - uses: actions/checkout@v4
+
+
 
       - name: Smoke (compose + health + login)
 
