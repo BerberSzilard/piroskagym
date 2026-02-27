@@ -1,3 +1,22 @@
+## Codex Operating Contract
+
+All feature development must follow this rule:
+
+- GitHub is the single source of truth.
+- AWS server must never be modified manually except for deployment.
+- All changes must be done through:
+  1. Feature branch
+  2. Pull Request
+  3. CI validation
+  4. Merge to main
+  5. Deploy via Docker Compose on AWS
+
+When starting a new task:
+- Describe the feature in business terms.
+- Translate into technical acceptance criteria.
+- Let Codex implement via PR.
+- Never copy code manually between server and repo.
+
 # Codex Cloud PR Workflow
 
 ## 1) Start work
